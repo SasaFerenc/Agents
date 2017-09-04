@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Agents</title>
+ <script src="/AgentsWEB/resources/angular.min.js"></script>
+ <script src="/AgentsWEB/resources/js/app.js"></script>
+</head>
+
+<style>
+
+.sender{
+	background-color: green;
+}
+.reciver{
+	background-color: yellow;
+}
+.reply{
+	background-color: gray;
+}
+
+</style>
+
+
+<body ng-app="myApp">
+
+<div ng-controller="myController">
+	
+	
+	Send with: &nbsp;
+	<select ng-model="sendVia">
+		<option value="rest" selected="selected"> Rest </option>
+		<option value="socket"> Web Socket</option>
+	</select>
+	<hr>
+	
+	<input type="text" placeholder="Unesite ime agenta" ng-model="newAgent.name"/> &nbsp;
+	<select ng-model="newAgent.type">
+		<option ng-repeat="type in typeList" value="{{type}}"> {{type}} </option>
+	</select>
+	<br/><br/>
+	<button ng-click="activeAgent()">Aktiviraj Agenta</button>
+	
+	<hr>
+	<button ng-click="getTypes()">Tipovi</button> &nbsp;
+	<button ng-click="getAgents()">Aktivni Agenti</button> &nbsp;
+	<button ng-click="getPerformative()">Performative</button> &nbsp;
+	<button ng-click="sendMessage()">Posalji Poruku</button>
+	
+	
+	<br/><br/>
+	<div ng-if="showSendMessage">
+	<table>
+		<tr>
+			<th>Name</th>
+			<th>Type</th>
+			<th>Host address</th>
+			<th>Recivers</th>
+			<th>Sender</th>
+			<th>Reply</th>
+		</tr>
+		<tr ng-repeat="agent in activeAgents" ng-class="setRowClass(agent)">
+			<td>{{agent.id.name}}</td>
+			<td>{{agent.id.type.name}}</td>
+			<td>{{agent.id.host.address}}</td>
+			<td><button ng-click="addRemoveReciver(agent)">Add/Remove</button> </td>
+			<td><button ng-click="makeMeSender(agent)">Sender</button> </td>
+			<td><button ng-click="replyToMe(agent)">Reply</button></td>
+		</tr>
+	</table>
+	
+	<br/>
+	
+	Performative: <br/>
+	<select ng-model="ACLMessage.performative">
+		<option ng-repeat="perf in performatives" value="{{perf}}"> {{perf}} </option>
+	</select>
+	
+	<br/><br/>
+	
+	Content: <br/>
+	<textarea cols="50" rows="5" ng-model="ACLMessage.content" placeholder="Enter message content" >/</textarea>
+	
+	<br/><br/>
+	<button ng-click="sendACLMessage()">Posalji</button>
+	
+	</div>
+	
+	
+	
+	
+	<div ng-if="showTypes">
+		<ul ng-repeat="(key, value) in agentTypes">
+			host address: {{key}}
+			<li ng-repeat="v in value">
+				{{v.name}}
+			</li>
+		</ul>
+		
+	</div>
+	
+	<table ng-if="showAgents">
+		<tr>
+			<th>Name</th>
+			<th>Type</th>
+			<th>Host address</th>
+			<th>Stop agent</th>
+		</tr>
+		<tr ng-repeat="agent in activeAgents">
+			<td>{{agent.id.name}}</td>
+			<td>{{agent.id.type.name}}</td>
+			<td>{{agent.id.host.address}}</td>
+			<td><button ng-click="stopAgent(agent)">Stop</button> </td>
+		</tr>
+	</table>
+
+	<table ng-if="showPerformative">
+		<tr>
+			<th>Performatives</th>
+		</tr>
+		<tr ng-repeat="performative in performatives">
+			<td>{{performative}}</td>
+		</tr>
+	</table>
+
+</div>
+
+
+</body>
+</html>
